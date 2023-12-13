@@ -704,7 +704,7 @@ class DeviceThermalComfort:
             fahrenheit + 61.0 + ((fahrenheit - 68.0) * 1.2) + (self._humidity * 0.094)
         )
 
-        if hi > 79:
+        if hi >= 80:
             hi = -42.379 + 2.04901523 * fahrenheit
             hi = hi + 10.14333127 * self._humidity
             hi = hi + -0.22475541 * fahrenheit * self._humidity
@@ -714,12 +714,12 @@ class DeviceThermalComfort:
             hi = hi + 0.00085282 * fahrenheit * pow(self._humidity, 2)
             hi = hi + -0.00000199 * pow(fahrenheit, 2) * pow(self._humidity, 2)
 
-        if self._humidity < 13 and fahrenheit >= 80 and fahrenheit <= 112:
-            hi = hi - ((13 - self._humidity) * 0.25) * math.sqrt(
-                (17 - abs(fahrenheit - 95)) * 0.05882
-            )
-        elif self._humidity > 85 and fahrenheit >= 80 and fahrenheit <= 87:
-            hi = hi + ((self._humidity - 85) * 0.1) * ((87 - fahrenheit) * 0.2)
+            if self._humidity < 13 and fahrenheit >= 80 and fahrenheit <= 112:
+                hi = hi - ((13 - self._humidity) * 0.25) * math.sqrt(
+                    (17 - abs(fahrenheit - 95)) / 17
+                )
+            elif self._humidity > 85 and fahrenheit >= 80 and fahrenheit <= 87:
+                hi = hi + ((self._humidity - 85) * 0.1) * ((87 - fahrenheit) * 0.2)
 
         return TemperatureConverter.convert(hi, UnitOfTemperature.FAHRENHEIT, UnitOfTemperature.CELSIUS)
 
