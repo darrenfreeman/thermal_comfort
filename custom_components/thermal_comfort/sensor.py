@@ -697,14 +697,22 @@ class DeviceThermalComfort:
     @compute_once_lock(SensorType.HEAT_INDEX)
     async def heat_index(self) -> float:
         """Heat Index <http://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml>."""
+
+        # For temperatures below 40F, return the temperature.
+        if self._temperature < 4.44444:
+            return self._temperature
+
         fahrenheit = TemperatureConverter.convert(
             self._temperature, UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT
         )
-        hi = 0.5 * (
-            fahrenheit + 61.0 + ((fahrenheit - 68.0) * 1.2) + (self._humidity * 0.094)
-        )
 
-        if hi >= 80:
+        # A simple formula, consistent with Steadman's data, for lower temperatures.
+        hi = 61.0 + ((fahrenheit - 68.0) * 1.2) + (self._humidity * 0.094)
+
+        # Average this value with the temperature, test against 80F.
+        if 0.5 * (fahrenheit + hi) >= 80:
+
+            # The full Rothfusz regression of Steadman's data.
             hi = -42.379 + 2.04901523 * fahrenheit
             hi = hi + 10.14333127 * self._humidity
             hi = hi + -0.22475541 * fahrenheit * self._humidity
@@ -714,11 +722,12 @@ class DeviceThermalComfort:
             hi = hi + 0.00085282 * fahrenheit * pow(self._humidity, 2)
             hi = hi + -0.00000199 * pow(fahrenheit, 2) * pow(self._humidity, 2)
 
-            if self._humidity < 13 and fahrenheit >= 80 and fahrenheit <= 112:
+            # Further improvements to the regression.
+            if self._humidity < 13 and fahrenheit > 80 and fahrenheit < 112:
                 hi = hi - ((13 - self._humidity) * 0.25) * math.sqrt(
                     (17 - abs(fahrenheit - 95)) / 17
                 )
-            elif self._humidity > 85 and fahrenheit >= 80 and fahrenheit <= 87:
+            elif self._humidity > 85 and fahrenheit > 80 and fahrenheit < 87:
                 hi = hi + ((self._humidity - 85) * 0.1) * ((87 - fahrenheit) * 0.2)
 
         return TemperatureConverter.convert(hi, UnitOfTemperature.FAHRENHEIT, UnitOfTemperature.CELSIUS)
