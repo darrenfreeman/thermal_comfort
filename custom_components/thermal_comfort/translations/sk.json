@@ -112,7 +112,7 @@
           "outside_calculable_range": "Mimo vypočítateľného rozsahu",
           "comfortable": "Príjemne",
           "slightly_uncomfortable": "Mierny diskomfort",
-          "moderatly_uncomfortable": "Stredne nepríjemné",
+          "moderately_uncomfortable": "Stredne nepríjemné",
           "highly_uncomfortable": "Veľmi nepríjemné"
         }
       },
@@ -122,12 +122,12 @@
           "outside_calculable_range": "Mimo vypočítateľného rozsahu",
           "comfortable": "Príjemne",
           "slightly_uncomfortable": "Mierny diskomfort",
-          "moderatly_uncomfortable": "Stredne nepríjemné",
+          "moderately_uncomfortable": "Stredne nepríjemné",
           "highly_uncomfortable": "Veľmi nepríjemné"
         }
       },
       "summer_simmer_index": {
-        "name": "Summer Simmer index"
+        "name": "Letný Simmer index"
       },
       "summer_simmer_perception": {
         "name": "Vnímanie letného varu",

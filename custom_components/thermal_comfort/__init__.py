@@ -20,6 +20,7 @@ from homeassistant.helpers.reload import (
     async_integration_yaml_config,
     async_reload_integration_platforms,
 )
+from homeassistant.helpers.service import async_register_admin_service
 from homeassistant.helpers.typing import ConfigType
 
 from .config_flow import get_value
@@ -63,7 +64,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # We have no unique_id yet, let's use backup.
         hass.config_entries.async_update_entry(entry, unique_id=entry.entry_id)
 
-    hass.async_create_task(
+    await hass.async_create_task(
         hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     )
     update_listener = entry.add_update_listener(async_update_options)
@@ -159,9 +160,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
         hass.bus.async_fire(f"event_{DOMAIN}_reloaded", context=call.context)
 
-    hass.helpers.service.async_register_admin_service(
-        DOMAIN, SERVICE_RELOAD, _reload_config
-    )
+    async_register_admin_service(hass, DOMAIN, SERVICE_RELOAD, _reload_config)
 
     return True
 
