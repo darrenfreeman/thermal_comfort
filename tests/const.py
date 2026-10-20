@@ -1,4 +1,5 @@
 """General test constants."""
+
 from custom_components.thermal_comfort.const import (
     CONF_HUMIDITY_SENSOR,
     CONF_POLL,
@@ -25,3 +26,11 @@ ADVANCED_USER_INPUT = {
     CONF_NAME: "test_thermal_comfort",
     CONF_ENABLED_SENSORS: [],
 }
+
+
+def form_input(flat_input: dict) -> dict:
+    """Turn flat options into the nested input of the config and options forms."""
+    advanced = (CONF_POLL, CONF_SCAN_INTERVAL, CONF_CUSTOM_ICONS, CONF_ENABLED_SENSORS)
+    return {k: v for k, v in flat_input.items() if k not in advanced} | {
+        "advanced": {k: v for k, v in flat_input.items() if k in advanced}
+    }
